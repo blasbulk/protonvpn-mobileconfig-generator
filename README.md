@@ -11,7 +11,7 @@ This is a self-contained HTML/JavaScript file which generates mobileconfig files
 ## Instructions
 
 1. You **must** install ProtonVPN's Root CA on your device before you will be able to connect to any ProtonVPN servers. Follow [this link](https://protonvpn.com/download/ProtonVPN_ike_root.der) on the respective device to install the certificate.
-1. [Visit this page]() using the device you intend to install the mobileconfig file on, **or** download `generate.html` and open it using your web browser, or host it on your own web server.
+1. [Visit this page](https://barracuda6.github.io/protonvpn-mobileconfig-generator/generate.html) using the device you intend to install the mobileconfig file on, **or** download `generate.html` and open it using your web browser, or host it on your own web server.
 2. Select the check box next to each server you wish to include in the mobileconfig file.
 3. Enter the OpenVPN/IKEv2 username and password found on your [ProtonVPN account settings page](https://account.protonvpn.com/settings) (this is **not** the username and password you normally use to log in!)
 4. Configure other settings to your liking.
