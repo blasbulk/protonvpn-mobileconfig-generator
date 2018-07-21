@@ -1,0 +1,1 @@
+# protonvpn-mobileconfig-generator-js
