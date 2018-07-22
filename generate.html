@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProtonVPN Configuration Profile Generator</title>
+
+    <style>
+        html * {
+            font: 100% 'Lucida Grande','Lucida Sans Unicode',Helvetica,Arial,Verdana,sans-serif;
+            font-size: 13px;
+
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 3px;
+            margin-bottom: 3px;
+
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+
+        /****** FORM OBJECTS ******/
+
+        button {
+            font-size: 14px;
+        }
+
+        fieldset {
+            display: inline;
+            text-align: right;
+        }
+
+        fieldset input[type=text] {
+            float: right;
+            width: 200px;
+        }
+
+        fieldset label {
+            float: left;
+            margin-right: 60px;
+        }
+
+        fieldset select {
+            text-align: right;
+        }
+
+
+        /****** TABLE ******/
+
+        table {
+            border-collapse: collapse;
+            border: solid 1px black;
+        }
+
+        table thead tr {
+            text-align: center;
+            border-bottom: solid 2px black;
+            column-gap: 10px;
+        }
+
+        table thead td, table thead th {
+            border-left: solid 1px black;
+            column-gap: 10px;
+        }
+
+        thead tr td {
+            font-weight: bold;
+        }
+
+        /* cells */
+        td, th {
+            border-left: dotted 1px black;
+            column-gap: 10px;
+            padding: 5px;
+        }
+
+        tr {
+            align: center;
+
+            border-bottom: solid 1px black;
+            column-gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+        var servers = [
+            // display name, address, type, p2p, tor
+            // Index 5 (to be populated during table creation) will contain a
+            // reference to the respective server's checkbox object in the table
+            //
+            // TYPE
+            //     0: FREE server
+            //     1: BASIC server
+            //     2: PLUS server
+            // P2P
+            //     0: Not a P2P server
+            //     1: Is a P2P server
+            // TOR
+            //     0: Not a Tor server
+            //     1: Is a Tor server
+            ["AU#1", "au-01.protonvpn.com", 1, 0, 0],
+            ["AU#2", "au-02.protonvpn.com", 1, 0, 0],
+            ["AU#3", "au-03.protonvpn.com", 2, 0, 0],
+            ["AU#4", "au-04.protonvpn.com", 2, 0, 0],
+            ["AU#5", "au-05.protonvpn.com", 2, 0, 0],
+            ["AU#6", "au-06.protonvpn.com", 2, 0, 0],
+            ["AU#7", "au-07.protonvpn.com", 2, 0, 0],
+            ["AU#8", "au-08.protonvpn.com", 2, 0, 0],
+            ["CA#1", "ca-01.protonvpn.com", 1, 0, 0],
+            ["CA#2", "ca-02.protonvpn.com", 1, 0, 0],
+            ["CA#3", "ca-03.protonvpn.com", 2, 0, 0],
+            ["CA#4", "ca-04.protonvpn.com", 2, 0, 0],
+            ["CA#5", "ca-05.protonvpn.com", 1, 0, 0],
+            ["CA#6", "ca-06.protonvpn.com", 1, 0, 0],
+            ["CA#7", "ca-07.protonvpn.com", 2, 0, 0],
+            ["CA#8", "ca-08.protonvpn.com", 2, 0, 0],
+            ["CH#1", "ch-01.protonvpn.com", 1, 0, 0],
+            ["CH#2", "ch-02.protonvpn.com", 1, 0, 0],
+            ["CH#3", "ch-03.protonvpn.com", 2, 0, 0],
+            ["CH#4", "ch-04.protonvpn.com", 2, 0, 0],
+            ["CH#5", "ch-05.protonvpn.com", 2, 0, 0],
+            ["CH#6", "ch-06.protonvpn.com", 2, 0, 0],
+            ["CH#7", "ch-07.protonvpn.com", 2, 0, 0],
+            ["CH#8", "ch-08.protonvpn.com", 2, 0, 0],
+            ["CH#9-TOR", "ch-09-tor.protonvpn.com", 2, 0, 1],
+            ["CH#10", "ch-10.protonvpn.com", 1, 0, 0],
+            ["CH#11", "ch-11.protonvpn.com", 1, 0, 0],
+            ["CH#12", "ch-12.protonvpn.com", 2, 0, 0],
+            ["CH#13", "ch-13.protonvpn.com", 2, 0, 0],
+            ["CZ#1", "cz-01.protonvpn.com", 1, 0, 0],
+            ["CZ#2", "cz-02.protonvpn.com", 1, 0, 0],
+            ["CZ#3", "cz-03.protonvpn.com", 2, 0, 0],
+            ["CZ#4", "cz-04.protonvpn.com", 2, 0, 0],
+            ["DE#1", "de-01.protonvpn.com", 1, 0, 0],
+            ["DE#2", "de-02.protonvpn.com", 1, 0, 0],
+            ["DE#3", "de-03.protonvpn.com", 2, 0, 0],
+            ["DE#4", "de-04.protonvpn.com", 2, 0, 0],
+            ["DE#5", "de-05.protonvpn.com", 2, 0, 0],
+            ["DE#6", "de-06.protonvpn.com", 2, 0, 0],
+            ["DE#7", "de-07.protonvpn.com", 2, 0, 0],
+            ["DE#8", "de-08.protonvpn.com", 2, 0, 0],
+            ["DK#1", "dk-01.protonvpn.com", 1, 0, 0],
+            ["DK#2", "dk-02.protonvpn.com", 1, 0, 0],
+            ["DK#3", "dk-03.protonvpn.com", 2, 0, 0],
+            ["DK#4", "dk-04.protonvpn.com", 2, 0, 0],
+            ["ES#5", "es-05.protonvpn.com", 1, 0, 0],
+            ["ES#6", "es-06.protonvpn.com", 1, 0, 0],
+            ["ES#7", "es-07.protonvpn.com", 2, 0, 0],
+            ["ES#8", "es-08.protonvpn.com", 2, 0, 0],
+            ["FR#5", "fr-05.protonvpn.com", 1, 0, 0],
+            ["FR#6", "fr-06.protonvpn.com", 1, 0, 0],
+            ["FR#7", "fr-07.protonvpn.com", 2, 0, 0],
+            ["FR#8", "fr-08.protonvpn.com", 2, 0, 0],
+            ["HK#1", "hk-01.protonvpn.com", 1, 0, 0],
+            ["HK#2", "hk-02.protonvpn.com", 1, 0, 0],
+            ["HK#3", "hk-03.protonvpn.com", 2, 0, 0],
+            ["HK#4", "hk-04.protonvpn.com", 2, 0, 0],
+            ["HK#5-TOR", "hk-05-tor.protonvpn.com", 2, 0, 1],
+            ["IS#1", "is-01.protonvpn.com", 1, 0, 0],
+            ["IS#2", "is-02.protonvpn.com", 1, 0, 0],
+            ["IS#3", "is-03.protonvpn.com", 2, 0, 0],
+            ["IS#4", "is-04.protonvpn.com", 2, 0, 0],
+            ["IS#5", "is-05.protonvpn.com", 1, 0, 0],
+            ["IS#6", "is-06.protonvpn.com", 1, 0, 0],
+            ["IS#7", "is-07.protonvpn.com", 2, 0, 0],
+            ["IS#8", "is-08.protonvpn.com", 2, 0, 0],
+            ["IT#1", "it-01.protonvpn.com", 1, 0, 0],
+            ["IT#2", "it-02.protonvpn.com", 1, 0, 0],
+            ["IT#3", "it-03.protonvpn.com", 2, 0, 0],
+            ["IT#4", "it-04.protonvpn.com", 2, 0, 0],
+            ["JP#1", "jp-01.protonvpn.com", 1, 0, 0],
+            ["JP#2", "jp-02.protonvpn.com", 1, 0, 0],
+            ["JP#3", "jp-03.protonvpn.com", 1, 0, 0],
+            ["JP#4", "jp-04.protonvpn.com", 2, 0, 0],
+            ["JP#5", "jp-05.protonvpn.com", 1, 0, 0],
+            ["JP#6", "jp-06.protonvpn.com", 1, 0, 0],
+            ["JP#7", "jp-07.protonvpn.com", 2, 0, 0],
+            ["JP#8", "jp-08.protonvpn.com", 2, 0, 0],
+            ["JP#9", "jp-09.protonvpn.com", 1, 0, 0],
+            ["JP#10", "jp-10.protonvpn.com", 1, 0, 0],
+            ["JP#11", "jp-11.protonvpn.com", 1, 0, 0],
+            ["JP#12", "jp-12.protonvpn.com", 1, 0, 0],
+            ["JP-FREE#1", "jp-free-01.protonvpn.com", 0, 0, 0],
+            ["JP-FREE#2", "jp-free-02.protonvpn.com", 0, 0, 0],
+            ["NL#1", "nl-01.protonvpn.com", 1, 1, 0],
+            ["NL#2", "nl-02.protonvpn.com", 1, 1, 0],
+            ["NL#3", "nl-03.protonvpn.com", 2, 1, 0],
+            ["NL#4", "nl-04.protonvpn.com", 2, 1, 0],
+            ["NL#5", "nl-05.protonvpn.com", 2, 1, 0],
+            ["NL#6", "nl-06.protonvpn.com", 2, 1, 0],
+            ["NL#7", "nl-07.protonvpn.com", 2, 1, 0],
+            ["NL#8", "nl-08.protonvpn.com", 2, 1, 0],
+            ["NL#9", "nl-09.protonvpn.com", 2, 1, 0],
+            ["NL#10", "nl-10.protonvpn.com", 2, 1, 0],
+            ["NL#11", "nl-11.protonvpn.com", 2, 1, 0],
+            ["NL#12", "nl-12.protonvpn.com", 2, 1, 0],
+            ["NL#101", "nl-101.protonvpn.com", 1, 0, 0],
+            ["NL#102", "nl-102.protonvpn.com", 1, 0, 0],
+            ["NL#103", "nl-103.protonvpn.com", 1, 0, 0],
+            ["NL#104", "nl-104.protonvpn.com", 1, 0, 0],
+            ["NL#105", "nl-105.protonvpn.com", 1, 0, 0],
+            ["NL#106", "nl-106.protonvpn.com", 1, 0, 0],
+            ["NL#107", "nl-107.protonvpn.com", 1, 0, 0],
+            ["NL#108", "nl-108.protonvpn.com", 1, 0, 0],
+            ["NL#109", "nl-109.protonvpn.com", 1, 0, 0],
+            ["NL#110", "nl-110.protonvpn.com", 1, 0, 0],
+            ["NL#111", "nl-111.protonvpn.com", 1, 0, 0],
+            ["NL#112", "nl-112.protonvpn.com", 1, 0, 0],
+            ["NL#113", "nl-113.protonvpn.com", 1, 0, 0],
+            ["NL#114", "nl-114.protonvpn.com", 1, 0, 0],
+            ["NL#115", "nl-115.protonvpn.com", 1, 0, 0],
+            ["NL#116", "nl-116.protonvpn.com", 1, 0, 0],
+            ["NL#117", "nl-117.protonvpn.com", 1, 0, 0],
+            ["NL#118", "nl-118.protonvpn.com", 1, 0, 0],
+            ["NL#119", "nl-119.protonvpn.com", 1, 0, 0],
+            ["NL#120", "nl-120.protonvpn.com", 1, 0, 0],
+            ["NL#125", "nl-125.protonvpn.com", 1, 0, 0],
+            ["NL#126", "nl-126.protonvpn.com", 1, 0, 0],
+            ["NL#127", "nl-127.protonvpn.com", 1, 0, 0],
+            ["NL#128", "nl-128.protonvpn.com", 1, 0, 0],
+            ["NL#129", "nl-129.protonvpn.com", 1, 0, 0],
+            ["NL#130", "nl-130.protonvpn.com", 1, 0, 0],
+            ["NL#131", "nl-131.protonvpn.com", 1, 0, 0],
+            ["NL#132", "nl-132.protonvpn.com", 1, 0, 0],
+            ["NL#133", "nl-133.protonvpn.com", 1, 0, 0],
+            ["NL#134", "nl-134.protonvpn.com", 1, 0, 0],
+            ["NL#135", "nl-135.protonvpn.com", 1, 0, 0],
+            ["NL#136", "nl-136.protonvpn.com", 1, 0, 0],
+            ["NL-FREE#1", "nl-free-01.protonvpn.com", 0, 0, 0],
+            ["NL-FREE#2", "nl-free-02.protonvpn.com", 0, 0, 0],
+            ["SE#1", "se-01.protonvpn.com", 1, 1, 0],
+            ["SE#2", "se-02.protonvpn.com", 1, 1, 0],
+            ["SE#3", "se-03.protonvpn.com", 2, 1, 0],
+            ["SE#4", "se-04.protonvpn.com", 2, 1, 0],
+            ["SE#5", "se-05.protonvpn.com", 1, 1, 0],
+            ["SE#6", "se-06.protonvpn.com", 1, 1, 0],
+            ["SE#7", "se-07.protonvpn.com", 2, 1, 0],
+            ["SE#8", "se-08.protonvpn.com", 2, 1, 0],
+            ["SG#1", "sg-01.protonvpn.com", 1, 1, 0],
+            ["SG#2", "sg-02.protonvpn.com", 1, 1, 0],
+            ["SG#3", "sg-03.protonvpn.com", 2, 1, 0],
+            ["SG#4", "sg-04.protonvpn.com", 2, 1, 0],
+            ["SG#5", "sg-05.protonvpn.com", 2, 1, 0],
+            ["SG#6", "sg-06.protonvpn.com", 2, 1, 0],
+            ["SG#7", "sg-07.protonvpn.com", 2, 1, 0],
+            ["SG#8", "sg-08.protonvpn.com", 2, 1, 0],
+            ["UK#5", "uk-05.protonvpn.com", 1, 0, 0],
+            ["UK#6", "uk-06.protonvpn.com", 1, 0, 0],
+            ["UK#7", "uk-07.protonvpn.com", 2, 0, 0],
+            ["UK#8", "uk-08.protonvpn.com", 2, 0, 0],
+            ["UK#9", "uk-09.protonvpn.com", 2, 0, 0],
+            ["UK#10", "uk-10.protonvpn.com", 2, 0, 0],
+            ["UK#11", "uk-11.protonvpn.com", 2, 0, 0],
+            ["UK#12", "uk-12.protonvpn.com", 2, 0, 0],
+            ["US-CA#01", "us-ca-01.protonvpn.com", 1, 0, 0],
+            ["US-CA#02", "us-ca-02.protonvpn.com", 1, 0, 0],
+            ["US-CA#03", "us-ca-03.protonvpn.com", 2, 0, 0],
+            ["US-CA#04", "us-ca-04.protonvpn.com", 2, 0, 0],
+            ["US-CA#05", "us-ca-05.protonvpn.com", 2, 0, 0],
+            ["US-CA#06", "us-ca-06.protonvpn.com", 2, 0, 0],
+            ["US-CA#07", "us-ca-07.protonvpn.com", 2, 0, 0],
+            ["US-CA#08", "us-ca-08.protonvpn.com", 2, 0, 0],
+            ["US-CA#101", "us-ca-101.protonvpn.com", 1, 0, 0],
+            ["US-CA#102", "us-ca-102.protonvpn.com", 1, 0, 0],
+            ["US-CA#103", "us-ca-103.protonvpn.com", 1, 0, 0],
+            ["US-CA#104", "us-ca-104.protonvpn.com", 1, 0, 0],
+            ["US-CA#105", "us-ca-105.protonvpn.com", 1, 0, 0],
+            ["US-CA#106", "us-ca-106.protonvpn.com", 1, 0, 0],
+            ["US-CA#107", "us-ca-107.protonvpn.com", 1, 0, 0],
+            ["US-CA#108", "us-ca-108.protonvpn.com", 1, 0, 0],
+            ["US-CA#109", "us-ca-109.protonvpn.com", 1, 0, 0],
+            ["US-CA#110", "us-ca-110.protonvpn.com", 1, 0, 0],
+            ["US-CA#111", "us-ca-111.protonvpn.com", 1, 0, 0],
+            ["US-CA#112", "us-ca-112.protonvpn.com", 1, 0, 0],
+            ["US-CO#1", "us-co-01.protonvpn.com", 1, 0, 0],
+            ["US-CO#2", "us-co-02.protonvpn.com", 1, 0, 0],
+            ["US-CO#3", "us-co-03.protonvpn.com", 1, 0, 0],
+            ["US-CO#4", "us-co-04.protonvpn.com", 1, 0, 0],
+            ["US-CO#5", "us-co-05.protonvpn.com", 2, 0, 0],
+            ["US-CO#6", "us-co-06.protonvpn.com", 2, 0, 0],
+            ["US-CO#7", "us-co-07.protonvpn.com", 2, 0, 0],
+            ["US-CO#8", "us-co-08.protonvpn.com", 2, 0, 0],
+            ["US-FREE#1", "us-free-01.protonvpn.com", 0, 0, 0],
+            ["US-FREE#2", "us-free-02.protonvpn.com", 0, 0, 0],
+            ["US-IL#1", "us-il-01.protonvpn.com", 2, 0, 0],
+            ["US-IL#2", "us-il-02.protonvpn.com", 2, 0, 0],
+            ["US-IL#3", "us-il-03.protonvpn.com", 2, 0, 0],
+            ["US-IL#4", "us-il-04.protonvpn.com", 2, 0, 0],
+            ["US-IL#5", "us-il-05.protonvpn.com", 2, 0, 0],
+            ["US-IL#6", "us-il-06.protonvpn.com", 2, 0, 0],
+            ["US-IL#7", "us-il-07.protonvpn.com", 2, 0, 0],
+            ["US-IL#8", "us-il-08.protonvpn.com", 2, 0, 0],
+            ["US-IL#101", "us-il-101.protonvpn.com", 1, 0, 0],
+            ["US-IL#102", "us-il-102.protonvpn.com", 1, 0, 0],
+            ["US-IL#103", "us-il-103.protonvpn.com", 1, 0, 0],
+            ["US-IL#104", "us-il-104.protonvpn.com", 1, 0, 0],
+            ["US-NJ#1", "us-nj-01.protonvpn.com", 2, 0, 0],
+            ["US-NJ#2", "us-nj-02.protonvpn.com", 2, 0, 0],
+            ["US-NJ#3", "us-nj-03.protonvpn.com", 2, 0, 0],
+            ["US-NJ#4", "us-nj-04.protonvpn.com", 2, 0, 0],
+            ["US-TX#1", "us-tx-01.protonvpn.com", 1, 0, 0],
+            ["US-TX#2", "us-tx-02.protonvpn.com", 2, 0, 0],
+            ["US-TX#3", "us-tx-03.protonvpn.com", 2, 0, 0],
+            ["US-TX#4-TOR", "us-tx-04-tor.protonvpn.com", 2, 0, 1],
+            ["US-TX#101", "us-tx-101.protonvpn.com", 1, 0, 0],
+            ["US-TX#102", "us-tx-102.protonvpn.com", 1, 0, 0],
+            ["US-TX#103", "us-tx-103.protonvpn.com", 1, 0, 0],
+            ["US-TX#104", "us-tx-104.protonvpn.com", 1, 0, 0],
+            ["US-TX#105", "us-tx-105.protonvpn.com", 1, 0, 0],
+            ["US-TX#106", "us-tx-106.protonvpn.com", 1, 0, 0],
+            ["US-TX#107", "us-tx-107.protonvpn.com", 1, 0, 0],
+            ["US-TX#108", "us-tx-108.protonvpn.com", 1, 0, 0],
+            ["US-VA#1", "us-va-01.protonvpn.com", 1, 0, 0],
+            ["US-VA#2", "us-va-02.protonvpn.com", 1, 0, 0],
+            ["US-VA#3", "us-va-03.protonvpn.com", 2, 0, 0],
+            ["US-VA#4", "us-va-04.protonvpn.com", 2, 0, 0],
+            ["US-VA#101", "us-va-101.protonvpn.com", 1, 0, 0],
+            ["US-VA#102", "us-va-102.protonvpn.com", 1, 0, 0],
+            ["US-VA#103", "us-va-103.protonvpn.com", 1, 0, 0],
+            ["US-VA#104", "us-va-104.protonvpn.com", 1, 0, 0],
+            ["US-VA#105", "us-va-105.protonvpn.com", 1, 0, 0],
+            ["US-VA#106", "us-va-106.protonvpn.com", 1, 0, 0],
+            ["US-VA#107", "us-va-107.protonvpn.com", 1, 0, 0],
+            ["US-VA#108", "us-va-108.protonvpn.com", 1, 0, 0],
+            ["US-VA#109", "us-va-109.protonvpn.com", 1, 0, 0],
+            ["US-VA#110", "us-va-110.protonvpn.com", 1, 0, 0],
+            ["US-VA#111", "us-va-111.protonvpn.com", 1, 0, 0],
+            ["US-VA#112", "us-va-112.protonvpn.com", 1, 0, 0]
+        ];
+
+        var settings = {
+            "IKEv2": {
+                "AuthName": "",
+                "AuthPassword": "",
+                "IKESA": {
+                    "EncryptionAlgorithm": "AES-256",
+                    "IntegrityAlgorithm": "SHA2-256",
+                    "DiffieHellmanGroup": 16
+                },
+                "ChildSA": {
+                    "EncryptionAlgorithm": "AES-256",
+                    "IntegrityAlgorithm": "SHA2-256",
+                    "DiffieHellmanGroup": 16
+                },
+                "options": {
+                    "EncryptionAlgorithm": ["AES-128", "AES-256", "AES-128-GCM", "AES-256-GCM"],
+                    "IntegrityAlgorithm": ["SHA2-256", "SHA2-384", "SHA2-512"],
+                    "DiffieHellmanGroup": [14, 15, 16, 17, 18, 19, 20, 21]
+                }
+            }
+        };
+
+
+        /****************************************************************************/
+
+
+        // GUID Generator
+        // https://stackoverflow.com/a/105074
+        // Provides randomly-generated UUIDs for mobileconfig PayloadUUID keys
+        function guid() {
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+            }
+
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+        }
+
+
+        // File Downloader
+        // https://stackoverflow.com/a/18197341
+        // Presents a generated mobileconfig file for download/installation
+        function downloadMobileconfig(filename, data) {
+            var element = document.createElement("a");
+            element.setAttribute("href", "data:application/x-apple-aspen-config;charset=utf-8," + encodeURIComponent(data));
+            element.setAttribute("download", filename);
+
+            element.style.display = "none";
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
+
+        // XML Pretty Printing
+        // https://stackoverflow.com/a/2509865
+        function formatXML(xml) {
+            var reg = /(>)\s*(<)(\/*)/g; // updated Mar 30, 2015
+            var wsexp = / *(.*) +\n/g;
+            var contexp = /(<.+>)(.+\n)/g;
+            xml = xml.replace(reg, '$1\n$2$3').replace(wsexp, '$1\n').replace(contexp, '$1\n$2');
+            var pad = 0;
+            var formatted = '';
+            var lines = xml.split('\n');
+            var indent = 0;
+            var lastType = 'other';
+            // 4 types of tags - single, closing, opening, other (text, doctype, comment) - 4*4 = 16 transitions
+            var transitions = {
+                'single->single': 0,
+                'single->closing': -1,
+                'single->opening': 0,
+                'single->other': 0,
+                'closing->single': 0,
+                'closing->closing': -1,
+                'closing->opening': 0,
+                'closing->other': 0,
+                'opening->single': 1,
+                'opening->closing': 0,
+                'opening->opening': 1,
+                'opening->other': 1,
+                'other->single': 0,
+                'other->closing': -1,
+                'other->opening': 0,
+                'other->other': 0
+            };
+
+            for (var i = 0; i < lines.length; i++) {
+                var ln = lines[i];
+
+                // Luca Viggiani 2017-07-03: handle optional <?xml ... ?> declaration
+                if (ln.match(/\s*<\?xml/)) {
+                    formatted += ln + "\n";
+                    continue;
+                }
+                // ---
+
+                var single = Boolean(ln.match(/<.+\/>/)); // is this line a single tag? ex. <br />
+                var closing = Boolean(ln.match(/<\/.+>/)); // is this a closing tag? ex. </a>
+                var opening = Boolean(ln.match(/<[^!].*>/)); // is this even a tag (that's not <!something>)
+                var type = single ? 'single' : closing ? 'closing' : opening ? 'opening' : 'other';
+                var fromTo = lastType + '->' + type;
+                lastType = type;
+                var padding = '';
+
+                indent += transitions[fromTo];
+                for (var j = 0; j < indent; j++) {
+                    padding += '\t';
+                }
+                if (fromTo == 'opening->closing')
+                    formatted = formatted.substr(0, formatted.length - 1) + ln + '\n'; // substr removes line break (\n) from prev loop
+                else
+                    formatted += padding + ln + '\n';
+            }
+
+            return formatted;
+        }
+
+
+        // XML Document Generator
+        // http://help.dottoro.com/ljqlhagh.php
+        // Generates and returns a mobileconfig file as an unformatted XML string
+        function generateMobileconfig() {
+            // Helper functions to streamline the addition of keys and their data
+            function newElement(name, text) {
+                // Returns an open/close element pair (e.g. "<array></array>")
+                var element = doc.createElement(name);
+
+                if (text != undefined) {
+                    var textNode = doc.createTextNode(text);
+                } else {
+                    var textNode = doc.createTextNode("");
+                }
+
+                element.appendChild(textNode);
+
+                return element;
+            }
+
+            function newBoolElement(text) {
+                // Returns one closed element (e.g. "<true/>")
+                var element = doc.createElement(text);
+
+                return element;
+            }
+
+
+            // Base document
+
+            var mobileconfigDocType = document.implementation.createDocumentType("plist", "-//Apple//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd");
+            var doc = document.implementation.createDocument("", "", mobileconfigDocType);
+
+            var plist = doc.createElement("plist");
+            plist.setAttribute("version", "1.0");
+            doc.appendChild(plist);
+
+            var dict = doc.createElement("dict");
+            plist.appendChild(dict);
+
+
+            // Top-level mobileconfig keys
+
+            dict.appendChild(newElement("key", "PayloadContent"));
+            var rootPayloadContent = dict.appendChild(newElement("array"));
+
+            dict.appendChild(newElement("key", "PayloadDisplayName"));
+            dict.appendChild(newElement("string", "ProtonVPN"));
+
+            dict.appendChild(newElement("key", "PayloadIdentifier"));
+            dict.appendChild(newElement("string", "com.protonvpn.profile"));
+
+            dict.appendChild(newElement("key", "PayloadType"));
+            dict.appendChild(newElement("string", "Configuration"));
+
+            dict.appendChild(newElement("key", "PayloadUUID"));
+            dict.appendChild(newElement("string", guid()));
+
+            dict.appendChild(newElement("key", "PayloadVersion"));
+            dict.appendChild(newElement("integer", 1));
+
+
+            // Loop through all server entries to find those whose checkboxes were checked
+            for (let server of servers.values()) {
+                // If the checkbox for the server was checked, generate a VPN payload
+                if (server[5].checked === true) {
+                    // Root dict for the entire VPN payload
+                    var dict_root = doc.createElement("dict");
+                    rootPayloadContent.appendChild(dict_root);
+
+                    dict_root.appendChild(newElement("key", "UserDefinedName"));
+                    dict_root.appendChild(newElement("string", server[0]));
+
+                    dict_root.appendChild(newElement("key", "OverridePrimary"));
+                    dict_root.appendChild(newBoolElement("false"));
+
+                    dict_root.appendChild(newElement("key", "VPNType"));
+                    dict_root.appendChild(newElement("string", "IKEv2"));
+
+                    // root -> IKEv2 dict
+                    dict_root.appendChild(newElement("key", "IKEv2"));
+                    dict_IKEv2 = dict_root.appendChild(newElement("dict"));
+
+                    dict_IKEv2.appendChild(newElement("key", "RemoteAddress"));
+                    dict_IKEv2.appendChild(newElement("string", server[1]));
+
+                    dict_IKEv2.appendChild(newElement("key", "LocalIdentifier"));
+                    dict_IKEv2.appendChild(newElement("string", settings.IKEv2.AuthName));
+
+                    dict_IKEv2.appendChild(newElement("key", "RemoteIdentifier"));
+                    dict_IKEv2.appendChild(newElement("string", server[1]));
+
+                    dict_IKEv2.appendChild(newElement("key", "AuthenticationMethod"));
+                    dict_IKEv2.appendChild(newElement("string", "None"));
+
+                    dict_IKEv2.appendChild(newElement("key", "ExtendedAuthEnabled"));
+                    dict_IKEv2.appendChild(newElement("integer", 1));
+
+                    dict_IKEv2.appendChild(newElement("key", "AuthName"));
+                    dict_IKEv2.appendChild(newElement("string", settings.IKEv2.AuthName));
+
+                    dict_IKEv2.appendChild(newElement("key", "AuthPassword"));
+                    dict_IKEv2.appendChild(newElement("string", settings.IKEv2.AuthPassword));
+
+                    dict_IKEv2.appendChild(newElement("key", "ServerCertificateIssuerCommonName"));
+                    dict_IKEv2.appendChild(newElement("string", "ProtonVPN Root CA"));
+
+                    dict_IKEv2.appendChild(newElement("key", "TLSMinimumVersion"));
+                    dict_IKEv2.appendChild(newElement("string", "1.2"));
+
+                    dict_IKEv2.appendChild(newElement("key", "EnablePFS"));
+                    dict_IKEv2.appendChild(newElement("integer", 1));
+
+
+                    // root -> IKEv2 -> IKESecurityAssociationParameters dict
+                    dict_IKEv2.appendChild(newElement("key", "IKESecurityAssociationParameters"));
+                    dict_IKEv2_IKESA = dict_IKEv2.appendChild(newElement("dict"));
+
+                    dict_IKEv2_IKESA.appendChild(newElement("key", "EncryptionAlgorithm"));
+                    dict_IKEv2_IKESA.appendChild(newElement("string", settings.IKEv2.IKESA.EncryptionAlgorithm));
+
+                    dict_IKEv2_IKESA.appendChild(newElement("key", "IntegrityAlgorithm"));
+                    dict_IKEv2_IKESA.appendChild(newElement("string", settings.IKEv2.IKESA.IntegrityAlgorithm));
+
+                    dict_IKEv2_IKESA.appendChild(newElement("key", "DiffieHellmanGroup"));
+                    dict_IKEv2_IKESA.appendChild(newElement("integer", settings.IKEv2.IKESA.DiffieHellmanGroup));
+
+                    dict_IKEv2_IKESA.appendChild(newElement("key", "DisableRedirect"));
+                    dict_IKEv2_IKESA.appendChild(newElement("integer", 1));
+
+
+                    // root -> IKEv2 -> ChildSecurityAssociationParameters dict
+                    dict_IKEv2.appendChild(newElement("key", "ChildSecurityAssociationParameters"));
+                    dict_IKEv2_ChildSA = dict_IKEv2.appendChild(newElement("dict"));
+
+                    dict_IKEv2_ChildSA.appendChild(newElement("key", "EncryptionAlgorithm"));
+                    dict_IKEv2_ChildSA.appendChild(newElement("string", settings.IKEv2.ChildSA.EncryptionAlgorithm));
+
+                    dict_IKEv2_ChildSA.appendChild(newElement("key", "IntegrityAlgorithm"));
+                    dict_IKEv2_ChildSA.appendChild(newElement("string", settings.IKEv2.ChildSA.IntegrityAlgorithm));
+
+                    dict_IKEv2_ChildSA.appendChild(newElement("key", "DiffieHellmanGroup"));
+                    dict_IKEv2_ChildSA.appendChild(newElement("integer", settings.IKEv2.ChildSA.DiffieHellmanGroup));
+
+                    dict_IKEv2_ChildSA.appendChild(newElement("key", "DisableRedirect"));
+                    dict_IKEv2_ChildSA.appendChild(newElement("integer", 1));
+
+
+                    // Additional root dict keys
+                    dict_root.appendChild(newElement("key", "PayloadDisplayName"));
+                    dict_root.appendChild(newElement("string", server[0]));
+
+                    dict_root.appendChild(newElement("key", "PayloadIdentifier"));
+                    dict_root.appendChild(newElement("string", "com.protonvpn.profile.vpn." + server[0]
+                        .replace("#", "")
+                        .toLowerCase()
+                        ));
+
+                    dict_root.appendChild(newElement("key", "PayloadType"));
+                    dict_root.appendChild(newElement("string", "com.apple.vpn.managed"));
+
+                    dict_root.appendChild(newElement("key", "PayloadUUID"));
+                    dict_root.appendChild(newElement("string", guid()));
+
+                    dict_root.appendChild(newElement("key", "PayloadVersion"));
+                    dict_root.appendChild(newElement("integer", 1));
+                }
+            }
+
+            var xmlString = new XMLSerializer().serializeToString(doc);
+
+            return xmlString;
+        }
+
+
+        // Displays a table of servers
+        function displayServerTable() {
+            var body = document.body;
+            var table = document.createElement("table");
+            body.appendChild(table);
+
+            {
+                // Create table header
+                var header = table.createTHead();
+                var row = header.insertRow();
+
+                row.insertCell().innerHTML = "Add";
+                row.insertCell().innerHTML = "Name";
+                row.insertCell().innerHTML = "Address";
+                row.insertCell().innerHTML = "Type";
+                row.insertCell().innerHTML = "P2P?";
+                row.insertCell().innerHTML = "Tor?";
+            }
+
+            var tbody = document.createElement("tbody");
+            table.appendChild(tbody);
+
+            for (let server of servers.values()) {
+                var tr = tbody.insertRow();
+
+                {
+                    // Column 1: "Add" Checkbox
+
+                    var input = document.createElement("input");
+                    input.setAttribute("type", "checkbox");
+                    input.setAttribute("name", server[0]);
+                    input.setAttribute("id", server[0]);
+
+                    var td = tr.insertCell();
+                    td.appendChild(input);
+
+                    // Store a reference to this checkbox in the server array for easy access
+                    server.push(input);
+                }
+
+                {
+                    // Column 2: Server Display Name
+
+                    var td = tr.insertCell();
+                    td.innerHTML = server[0];
+                }
+
+                {
+                    // Column 3: Server Address
+
+                    var td = tr.insertCell();
+                    td.innerHTML = server[1];
+                }
+
+                {
+                    // Column 4: Server Type
+
+                    var td = tr.insertCell();
+
+                    switch(server[2])
+                    {
+                        case 0:
+                            td.innerHTML = "FREE";
+                            break;
+                        case 1:
+                            td.innerHTML = "BASIC";
+                            break;
+                        case 2:
+                            td.innerHTML = "PLUS";
+                            break;
+                        default:
+                            alert("Script Error 1");
+                    }
+                }
+
+                {
+                    // Column 5: Server P2P Support?
+
+                    var td = tr.insertCell();
+
+                    switch(server[3])
+                    {
+                        case 0:
+                            td.innerHTML = "";
+                            break;
+                        case 1:
+                            td.innerHTML = "P2P";
+                            break;
+                        default:
+                            alert("Script Error 2");
+                    }
+                }
+
+                {
+                    // Column 6: Server Tor Support?
+
+                    var td = tr.insertCell();
+
+                    switch(server[4])
+                    {
+                        case 0:
+                            td.innerHTML = "";
+                            break;
+                        case 1:
+                            td.innerHTML = "TOR";
+                            break;
+                        default:
+                            alert("Script Error 3");
+                    }
+                }
+            }
+        }
+
+
+        /****************************************************************************/
+
+
+        function onclickButtonGenerate() {
+            // Save settings
+            settings.IKEv2.AuthName = textBoxAuthName.value;
+            settings.IKEv2.AuthPassword = textBoxAuthPassword.value;
+
+            settings.IKEv2.IKESA.EncryptionAlgorithm = selectIKESAEncryptionAlgorithm.value;
+            settings.IKEv2.IKESA.IntegrityAlgorithm = selectIKESAIntegrityAlgorithm.value;
+            settings.IKEv2.IKESA.DiffieHellmanGroup = selectIKESADiffieHellmanGroup.value;
+
+            settings.IKEv2.ChildSA.EncryptionAlgorithm = selectChildSAEncryptionAlgorithm.value;
+            settings.IKEv2.ChildSA.IntegrityAlgorithm = selectChildSAIntegrityAlgorithm.value;
+            settings.IKEv2.ChildSA.DiffieHellmanGroup = selectChildSADiffieHellmanGroup.value;
+
+
+            // Deliver the package
+            var mobileconfigXML = formatXML(generateMobileconfig());
+
+            downloadMobileconfig("ProtonVPN.mobileconfig", mobileconfigXML);
+        }
+
+
+        /****************************************************************************/
+
+
+        function newLineBreak(parent) {
+            parent.appendChild(document.createElement("BR"));
+        }
+
+        function newLabel(target, text, parent) {
+            var label = document.createElement("LABEL");
+            parent.appendChild(label);
+
+            label.setAttribute("for", target);
+            label.innerHTML = text
+        }
+
+        function newFieldSet(name, text, parent) {
+            var fieldSet = document.createElement("FIELDSET");
+            parent.appendChild(fieldSet);
+            fieldSet.setAttribute("name", name);
+            fieldSet.setAttribute("id", name);
+
+            var legend = document.createElement("LEGEND");
+            fieldSet.appendChild(legend);
+            legend.innerHTML = text;
+        }
+
+        function newTextBox(name, text, parent) {
+            var textBox = document.createElement("INPUT");
+            newLabel(name, text, parent);
+            parent.appendChild(textBox);
+
+            textBox.setAttribute("type", "text");
+            textBox.setAttribute("name", name);
+            textBox.setAttribute("id", name);
+        }
+
+        function newSelect(name, text, options, defaultOption, parent) {
+            var select = document.createElement("SELECT");
+            newLabel(name, text, parent);
+            parent.appendChild(select);
+
+            select.setAttribute("name", name);
+            select.setAttribute("id", name);
+
+            for (let item of options.values()) {
+                var option = document.createElement("OPTION");
+
+                option.text = item;
+                select.add(option);
+            }
+
+            select.value = defaultOption;
+        }
+
+        function newButton(name, text, action, parent) {
+            var button = document.createElement("BUTTON");
+            parent.appendChild(button);
+
+            button.setAttribute("onclick", action);
+            button.innerHTML = text;
+        }
+
+
+        /****************************************************************************/
+
+
+        // Display heading
+        {
+            var h1 = document.createElement("H1");
+            document.body.appendChild(h1);
+
+            h1.innerHTML = "ProtonVPN Configuration Profile Generator";
+        }
+
+        newLineBreak(document.body);
+
+
+        // Display server table
+        displayServerTable();
+
+        newLineBreak(document.body);
+
+
+        // Display credentials fieldset
+        newFieldSet("fieldSetCredentials", "OpenVPN/IKEv2 Credentials", document.body);
+        newTextBox("textBoxAuthName", "Username:", fieldSetCredentials);
+        newLineBreak(fieldSetCredentials);
+        newTextBox("textBoxAuthPassword", "Password:", fieldSetCredentials);
+
+        newLineBreak(document.body);
+
+
+        // Display IKE SA fieldset
+        newFieldSet("fieldSetIKESA", "IKE Security Association Parameters", document.body);
+        newSelect("selectIKESAEncryptionAlgorithm", "Encryption Algorithm:", settings.IKEv2.options.EncryptionAlgorithm, settings.IKEv2.IKESA.EncryptionAlgorithm, fieldSetIKESA);
+        newLineBreak(fieldSetIKESA);
+        newSelect("selectIKESAIntegrityAlgorithm", "Integrity Algorithm:", settings.IKEv2.options.IntegrityAlgorithm, settings.IKEv2.IKESA.IntegrityAlgorithm, fieldSetIKESA);
+        newLineBreak(fieldSetIKESA);
+        newSelect("selectIKESADiffieHellmanGroup", "Diffie Hellman Group:", settings.IKEv2.options.DiffieHellmanGroup, settings.IKEv2.IKESA.DiffieHellmanGroup, fieldSetIKESA);
+
+        newLineBreak(document.body);
+
+
+        // Display Child SA fieldset
+        newFieldSet("fieldSetChildSA", "Child Security Association Parameters", document.body);
+        newSelect("selectChildSAEncryptionAlgorithm", "Encryption Algorithm:", settings.IKEv2.options.EncryptionAlgorithm, settings.IKEv2.ChildSA.EncryptionAlgorithm, fieldSetChildSA);
+        newLineBreak(fieldSetChildSA);
+        newSelect("selectChildSAIntegrityAlgorithm", "Integrity Algorithm:", settings.IKEv2.options.IntegrityAlgorithm, settings.IKEv2.ChildSA.IntegrityAlgorithm, fieldSetChildSA);
+        newLineBreak(fieldSetChildSA);
+        newSelect("selectChildSADiffieHellmanGroup", "Diffie Hellman Group:", settings.IKEv2.options.DiffieHellmanGroup, settings.IKEv2.ChildSA.DiffieHellmanGroup, fieldSetChildSA);
+
+        newLineBreak(document.body);
+
+
+        // Display generate button
+        newButton("buttonGenerate", "Generate", "onclickButtonGenerate();", document.body);
+    </script>
+</body>
+</html>
