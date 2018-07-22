@@ -26,3 +26,5 @@ This is a self-contained HTML/JavaScript file which generates mobileconfig files
 
 * [Apple Configuration Profile Reference](https://developer.apple.com/enterprise/documentation/Configuration-Profile-Reference.pdf) - Contains additional settings that can be used in mobileconfig files
 * [ProtonVPN iOS manual IKEv2 VPN setup](https://protonvpn.com/support/protonvpn-ios-manual-ikev2-vpn-setup/) - ProtonVPN's official instructions on setting up IKEv2 VPNs on iOS devices
+
+*This project is not affiliated with ProtonVPN in any way*
