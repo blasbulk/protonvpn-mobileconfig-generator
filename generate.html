@@ -393,6 +393,16 @@
         }
 
 
+        // https://stackoverflow.com/a/7918944
+        function decodeHTML(target) {
+            return target.replace(/&apos;/g, "'")
+                .replace(/&quot;/g, '"')
+                .replace(/&gt;/g, '>')
+                .replace(/&lt;/g, '<')
+                .replace(/&amp;/g, '&');
+        }
+
+
         // XML Pretty Printing
         // https://stackoverflow.com/a/2509865
         function formatXML(xml) {
@@ -434,6 +444,12 @@
                     continue;
                 }
                 // ---
+
+                // don't indent the first dict element in order to conform to Apple-generated mobileconfig style
+                if ((ln.match(/\s*<dict>/)) && (i == 3)) {
+                    formatted += ln + "\n";
+                    continue;
+                }
 
                 var single = Boolean(ln.match(/<.+\/>/)); // is this line a single tag? ex. <br />
                 var closing = Boolean(ln.match(/<\/.+>/)); // is this a closing tag? ex. </a>
@@ -489,6 +505,11 @@
 
             var mobileconfigDocType = document.implementation.createDocumentType("plist", "-//Apple//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd");
             var doc = document.implementation.createDocument("", "", mobileconfigDocType);
+
+
+            var processingInstruction = doc.createProcessingInstruction("xml", 'version="1.0" encoding="UTF-8"');
+            doc.insertBefore(processingInstruction, doc.firstChild);
+
 
             var plist = doc.createElement("plist");
             plist.setAttribute("version", "1.0");
@@ -626,7 +647,9 @@
                 }
             }
 
+
             var xmlString = new XMLSerializer().serializeToString(doc);
+            xmlString = decodeHTML(xmlString);
 
             return xmlString;
         }
