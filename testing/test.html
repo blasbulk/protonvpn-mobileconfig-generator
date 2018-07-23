@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REQ TEST</title>
+  <link rel="stylesheet" href="fv.css" type="text/css" />
+</head>
+<body>
+  <script type="text/javascript">
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+         // Action to be performed when the document is read;
+         var response = JSON.parse(this.responseText);
+         getElements(response);
+      }
+    };
+
+    xhttp.open("GET", "https://api.protonmail.ch/vpn/logicals", true);
+    xhttp.setRequestHeader("x-pm-appversion", "Other");
+    xhttp.setRequestHeader("x-pm-apiversion", "3");
+    xhttp.setRequestHeader("Accept", "application/vnd.protonmail.v1+json");
+    xhttp.send();
+
+    getElements = function(response) {
+      for (let server of response.LogicalServers.values()) {
+        console.log("Server Name: " + server.Name);
+        console.log("Server Domain: " + server.Domain);
+        console.log("Server Tier: " + server.Tier);
+      }
+    }
+  </script>
+</body>
+</html>
