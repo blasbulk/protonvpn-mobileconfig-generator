@@ -90,7 +90,9 @@
 
 <body>
     <script type="text/javascript">
-        var servers = [
+        "use strict";
+
+        let servers = [
             // display name, address, type, p2p, tor
             // Index 5 (to be populated during table creation) will contain a
             // reference to the respective server's checkbox object in the table
@@ -335,7 +337,7 @@
             ["US-VA#112", "us-va-112.protonvpn.com", 1, 0, 0]
         ];
 
-        var settings = {
+        let settings = {
             "IKEv2": {
                 "AuthName": "",
                 "AuthPassword": "",
@@ -380,7 +382,7 @@
         // https://stackoverflow.com/a/18197341
         // Presents a generated mobileconfig file for download/installation
         function downloadMobileconfig(filename, data) {
-            var element = document.createElement("a");
+            let element = document.createElement("a");
             element.setAttribute("href", "data:application/x-apple-aspen-config;charset=utf-8," + encodeURIComponent(data));
             element.setAttribute("download", filename);
 
@@ -406,17 +408,17 @@
         // XML Pretty Printing
         // https://stackoverflow.com/a/2509865
         function formatXML(xml) {
-            var reg = /(>)\s*(<)(\/*)/g; // updated Mar 30, 2015
-            var wsexp = / *(.*) +\n/g;
-            var contexp = /(<.+>)(.+\n)/g;
+            let reg = /(>)\s*(<)(\/*)/g; // updated Mar 30, 2015
+            let wsexp = / *(.*) +\n/g;
+            let contexp = /(<.+>)(.+\n)/g;
             xml = xml.replace(reg, '$1\n$2$3').replace(wsexp, '$1\n').replace(contexp, '$1\n$2');
-            var pad = 0;
-            var formatted = '';
-            var lines = xml.split('\n');
-            var indent = 0;
-            var lastType = 'other';
+            let pad = 0;
+            let formatted = '';
+            let lines = xml.split('\n');
+            let indent = 0;
+            let lastType = 'other';
             // 4 types of tags - single, closing, opening, other (text, doctype, comment) - 4*4 = 16 transitions
-            var transitions = {
+            let transitions = {
                 'single->single': 0,
                 'single->closing': -1,
                 'single->opening': 0,
@@ -435,8 +437,8 @@
                 'other->other': 0
             };
 
-            for (var i = 0; i < lines.length; i++) {
-                var ln = lines[i];
+            for (let i = 0; i < lines.length; i++) {
+                let ln = lines[i];
 
                 // Luca Viggiani 2017-07-03: handle optional <?xml ... ?> declaration
                 if (ln.match(/\s*<\?xml/)) {
@@ -451,16 +453,16 @@
                     continue;
                 }
 
-                var single = Boolean(ln.match(/<.+\/>/)); // is this line a single tag? ex. <br />
-                var closing = Boolean(ln.match(/<\/.+>/)); // is this a closing tag? ex. </a>
-                var opening = Boolean(ln.match(/<[^!].*>/)); // is this even a tag (that's not <!something>)
-                var type = single ? 'single' : closing ? 'closing' : opening ? 'opening' : 'other';
-                var fromTo = lastType + '->' + type;
+                let single = Boolean(ln.match(/<.+\/>/)); // is this line a single tag? ex. <br />
+                let closing = Boolean(ln.match(/<\/.+>/)); // is this a closing tag? ex. </a>
+                let opening = Boolean(ln.match(/<[^!].*>/)); // is this even a tag (that's not <!something>)
+                let type = single ? 'single' : closing ? 'closing' : opening ? 'opening' : 'other';
+                let fromTo = lastType + '->' + type;
                 lastType = type;
-                var padding = '';
+                let padding = '';
 
                 indent += transitions[fromTo];
-                for (var j = 0; j < indent; j++) {
+                for (let j = 0; j < indent; j++) {
                     padding += '\t';
                 }
                 if (fromTo == 'opening->closing')
@@ -479,13 +481,15 @@
         function generateMobileconfig() {
             // Helper functions to streamline the addition of keys and their data
             function newElement(name, text) {
+                let textNode;
+
                 // Returns an open/close element pair (e.g. "<array></array>")
-                var element = doc.createElement(name);
+                let element = doc.createElement(name);
 
                 if (text != undefined) {
-                    var textNode = doc.createTextNode(text);
+                    textNode = doc.createTextNode(text);
                 } else {
-                    var textNode = doc.createTextNode("");
+                    textNode = doc.createTextNode("");
                 }
 
                 element.appendChild(textNode);
@@ -495,7 +499,7 @@
 
             function newBoolElement(text) {
                 // Returns one closed element (e.g. "<true/>")
-                var element = doc.createElement(text);
+                let element = doc.createElement(text);
 
                 return element;
             }
@@ -503,26 +507,26 @@
 
             // Base document
 
-            var mobileconfigDocType = document.implementation.createDocumentType("plist", "-//Apple//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd");
-            var doc = document.implementation.createDocument("", "", mobileconfigDocType);
+            let mobileconfigDocType = document.implementation.createDocumentType("plist", "-//Apple//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd");
+            let doc = document.implementation.createDocument("", "", mobileconfigDocType);
 
 
-            var processingInstruction = doc.createProcessingInstruction("xml", 'version="1.0" encoding="UTF-8"');
+            let processingInstruction = doc.createProcessingInstruction("xml", 'version="1.0" encoding="UTF-8"');
             doc.insertBefore(processingInstruction, doc.firstChild);
 
 
-            var plist = doc.createElement("plist");
+            let plist = doc.createElement("plist");
             plist.setAttribute("version", "1.0");
             doc.appendChild(plist);
 
-            var dict = doc.createElement("dict");
+            let dict = doc.createElement("dict");
             plist.appendChild(dict);
 
 
             // Top-level mobileconfig keys
 
             dict.appendChild(newElement("key", "PayloadContent"));
-            var rootPayloadContent = dict.appendChild(newElement("array"));
+            let rootPayloadContent = dict.appendChild(newElement("array"));
 
             dict.appendChild(newElement("key", "PayloadDisplayName"));
             dict.appendChild(newElement("string", "ProtonVPN"));
@@ -545,7 +549,7 @@
                 // If the checkbox for the server was checked, generate a VPN payload
                 if (server[5].checked === true) {
                     // Root dict for the entire VPN payload
-                    var dict_root = doc.createElement("dict");
+                    let dict_root = doc.createElement("dict");
                     rootPayloadContent.appendChild(dict_root);
 
                     dict_root.appendChild(newElement("key", "UserDefinedName"));
@@ -559,7 +563,7 @@
 
                     // root -> IKEv2 dict
                     dict_root.appendChild(newElement("key", "IKEv2"));
-                    dict_IKEv2 = dict_root.appendChild(newElement("dict"));
+                    let dict_IKEv2 = dict_root.appendChild(newElement("dict"));
 
                     dict_IKEv2.appendChild(newElement("key", "RemoteAddress"));
                     dict_IKEv2.appendChild(newElement("string", server[1]));
@@ -594,7 +598,7 @@
 
                     // root -> IKEv2 -> IKESecurityAssociationParameters dict
                     dict_IKEv2.appendChild(newElement("key", "IKESecurityAssociationParameters"));
-                    dict_IKEv2_IKESA = dict_IKEv2.appendChild(newElement("dict"));
+                    let dict_IKEv2_IKESA = dict_IKEv2.appendChild(newElement("dict"));
 
                     dict_IKEv2_IKESA.appendChild(newElement("key", "EncryptionAlgorithm"));
                     dict_IKEv2_IKESA.appendChild(newElement("string", settings.IKEv2.IKESA.EncryptionAlgorithm));
@@ -611,7 +615,7 @@
 
                     // root -> IKEv2 -> ChildSecurityAssociationParameters dict
                     dict_IKEv2.appendChild(newElement("key", "ChildSecurityAssociationParameters"));
-                    dict_IKEv2_ChildSA = dict_IKEv2.appendChild(newElement("dict"));
+                    let dict_IKEv2_ChildSA = dict_IKEv2.appendChild(newElement("dict"));
 
                     dict_IKEv2_ChildSA.appendChild(newElement("key", "EncryptionAlgorithm"));
                     dict_IKEv2_ChildSA.appendChild(newElement("string", settings.IKEv2.ChildSA.EncryptionAlgorithm));
@@ -648,7 +652,7 @@
             }
 
 
-            var xmlString = new XMLSerializer().serializeToString(doc);
+            let xmlString = new XMLSerializer().serializeToString(doc);
             xmlString = decodeHTML(xmlString);
 
             return xmlString;
@@ -657,14 +661,14 @@
 
         // Displays a table of servers
         function displayServerTable() {
-            var body = document.body;
-            var table = document.createElement("table");
+            let body = document.body;
+            let table = document.createElement("table");
             body.appendChild(table);
 
             {
                 // Create table header
-                var header = table.createTHead();
-                var row = header.insertRow();
+                let header = table.createTHead();
+                let row = header.insertRow();
 
                 row.insertCell().innerHTML = "Add";
                 row.insertCell().innerHTML = "Name";
@@ -674,21 +678,21 @@
                 row.insertCell().innerHTML = "Tor?";
             }
 
-            var tbody = document.createElement("tbody");
+            let tbody = document.createElement("tbody");
             table.appendChild(tbody);
 
             for (let server of servers.values()) {
-                var tr = tbody.insertRow();
+                let tr = tbody.insertRow();
 
                 {
                     // Column 1: "Add" Checkbox
 
-                    var input = document.createElement("input");
+                    let input = document.createElement("input");
                     input.setAttribute("type", "checkbox");
                     input.setAttribute("name", server[0]);
                     input.setAttribute("id", server[0]);
 
-                    var td = tr.insertCell();
+                    let td = tr.insertCell();
                     td.appendChild(input);
 
                     // Store a reference to this checkbox in the server array for easy access
@@ -698,21 +702,21 @@
                 {
                     // Column 2: Server Display Name
 
-                    var td = tr.insertCell();
+                    let td = tr.insertCell();
                     td.innerHTML = server[0];
                 }
 
                 {
                     // Column 3: Server Address
 
-                    var td = tr.insertCell();
+                    let td = tr.insertCell();
                     td.innerHTML = server[1];
                 }
 
                 {
                     // Column 4: Server Type
 
-                    var td = tr.insertCell();
+                    let td = tr.insertCell();
 
                     switch(server[2])
                     {
@@ -733,7 +737,7 @@
                 {
                     // Column 5: Server P2P Support?
 
-                    var td = tr.insertCell();
+                    let td = tr.insertCell();
 
                     switch(server[3])
                     {
@@ -751,7 +755,7 @@
                 {
                     // Column 6: Server Tor Support?
 
-                    var td = tr.insertCell();
+                    let td = tr.insertCell();
 
                     switch(server[4])
                     {
@@ -787,7 +791,7 @@
 
 
             // Deliver the package
-            var mobileconfigXML = formatXML(generateMobileconfig());
+            let mobileconfigXML = formatXML(generateMobileconfig());
 
             downloadMobileconfig("ProtonVPN.mobileconfig", mobileconfigXML);
         }
@@ -801,7 +805,7 @@
         }
 
         function newLabel(target, text, parent) {
-            var label = document.createElement("LABEL");
+            let label = document.createElement("LABEL");
             parent.appendChild(label);
 
             label.setAttribute("for", target);
@@ -809,18 +813,18 @@
         }
 
         function newFieldSet(name, text, parent) {
-            var fieldSet = document.createElement("FIELDSET");
+            let fieldSet = document.createElement("FIELDSET");
             parent.appendChild(fieldSet);
             fieldSet.setAttribute("name", name);
             fieldSet.setAttribute("id", name);
 
-            var legend = document.createElement("LEGEND");
+            let legend = document.createElement("LEGEND");
             fieldSet.appendChild(legend);
             legend.innerHTML = text;
         }
 
         function newTextBox(name, text, parent) {
-            var textBox = document.createElement("INPUT");
+            let textBox = document.createElement("INPUT");
             newLabel(name, text, parent);
             parent.appendChild(textBox);
 
@@ -830,7 +834,7 @@
         }
 
         function newSelect(name, text, options, defaultOption, parent) {
-            var select = document.createElement("SELECT");
+            let select = document.createElement("SELECT");
             newLabel(name, text, parent);
             parent.appendChild(select);
 
@@ -838,7 +842,7 @@
             select.setAttribute("id", name);
 
             for (let item of options.values()) {
-                var option = document.createElement("OPTION");
+                let option = document.createElement("OPTION");
 
                 option.text = item;
                 select.add(option);
@@ -848,7 +852,7 @@
         }
 
         function newButton(name, text, action, parent) {
-            var button = document.createElement("BUTTON");
+            let button = document.createElement("BUTTON");
             parent.appendChild(button);
 
             button.setAttribute("onclick", action);
@@ -861,7 +865,7 @@
 
         // Display heading
         {
-            var h1 = document.createElement("H1");
+            let h1 = document.createElement("H1");
             document.body.appendChild(h1);
 
             h1.innerHTML = "ProtonVPN Configuration Profile Generator";
