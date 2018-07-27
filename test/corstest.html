@@ -17,6 +17,7 @@
     }
 
     request.open("GET", "https://api.protonmail.ch/vpn/logicals", true);
+    request.withCredentials = true;
     request.setRequestHeader("x-pm-appversion", "Other");
     request.setRequestHeader("x-pm-apiversion", "3");
     request.setRequestHeader("Accept", "application/vnd.protonmail.v1+json");
